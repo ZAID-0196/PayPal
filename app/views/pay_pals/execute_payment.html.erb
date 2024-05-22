@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayPal Payment</title>
+</head>
+<body>
+  <h1>PayPal Payment</h1>
+  
+  <form id="paymentForm">
+    <label for="recipient_email">Recipient Email:</label>
+    <input type="email" id="recipient_email" name="recipient_email" required><br><br>
+    
+    <label for="amount">Amount:</label>
+    <input type="text" id="amount" name="amount" required><br><br>
+    
+    <label for="currency">Currency:</label>
+    <input type="text" id="currency" name="currency" required><br><br>
+    
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required><br><br>
+    
+    <button type="submit">Submit Payment</button>
+  </form>
+
+  <div id="paymentResult"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#paymentForm').submit(function(event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
+        
+        $.ajax({
+          type: 'POST',
+          url: '/process_payment',
+          data: formData,
+          success: function(response) {
+            $('#paymentResult').text(JSON.stringify(response));
+            // Check if approval URL is present in the response
+            if (response.payment_response.links) {
+              var approvalUrl = response.payment_response.links.find(link => link.rel === 'approval_url');
+              if (approvalUrl) {
+                // Redirect the user to the approval URL
+                window.location.href = approvalUrl.href;
+              }
+            }
+          },
+          error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            $('#paymentResult').text("Error: " + xhr.responseText);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

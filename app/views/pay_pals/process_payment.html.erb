@@ -1,0 +1,142 @@
+<!-- PayPal Button Container -->
+<div id="paypal-button-container" class="paypal-button-style">Click here to send payout</div>
+
+<!-- Payment form -->
+<div id="paymentFormContainer" style="display: none;">
+  <form id="paymentForm" action="/process_payment" method="post">
+    <label for="recipient_email">Recipient Email:</label>
+    <input type="email" name="recipient_email" id="recipient_email" required><br><br>
+
+    <label for="amount">Amount:</label>
+    <input type="text" name="amount" id="amount" required><br><br>
+
+    <label for="currency">Currency:</label>
+    <input type="text" name="currency" id="currency" required><br><br>
+
+    <label for="description">Description:</label>
+    <input type="text" name="description" id="description" required><br><br>
+
+    <input type="submit" value="Submit Payment" id="submitButton">
+  </form>
+</div>
+
+<!-- PayPal SDK Script -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
+
+<!-- jQuery Library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- JavaScript -->
+<script>
+  $(document).ready(function() {
+    $('#paymentForm').submit(function(event) {
+      event.preventDefault();
+
+      var formData = $(this).serialize();
+
+      $.ajax({
+        type: "POST",
+        url: $(this).attr('action'),
+        data: formData,
+        success: function(response) {
+          if (response.status === 'success') {
+            alert('Payment successful!');
+          } else {
+            alert('Error: ' + response.message);
+          }
+        },
+        error: function(xhr, status, error) {
+          alert('Error: ' + error);
+        }
+      });
+    });
+
+    // Show the payment form when the PayPal button container is clicked
+    $('#paypal-button-container').click(function() {
+      $('#paymentFormContainer').show();
+    });
+
+    // Render the PayPal button
+    paypal.Buttons({
+      style: {
+        shape: 'rect',
+        color: 'black',
+        layout: 'vertical',
+        label: 'paypal',
+      },
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '100' // Replace with the actual amount
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+          // Call your server to save the transaction
+        });
+      }
+    }).render('#paypal-button-container');
+  });
+</script>
+
+<!-- CSS Styles -->
+<style>
+  /* Styles for PayPal Button */
+  .paypal-button-style {
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+  }
+
+  .paypal-button-style:hover {
+    background-color: #0056b3;
+  }
+
+  /* Styles for Payment Form */
+  #paymentFormContainer {
+    margin-top: 20px;
+    display: none;
+  }
+
+  #paymentForm {
+    text-align: left;
+  }
+
+  #paymentForm label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  #paymentForm input[type="text"],
+  #paymentForm input[type="email"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  #paymentForm input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #paymentForm input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+</style>

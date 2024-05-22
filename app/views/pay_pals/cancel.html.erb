@@ -1,0 +1,14 @@
+<div id="cancel-message" style="display: none;">
+  <h2>Payment Cancelled</h2>
+  <p>Your payment has been cancelled.</p>
+</div>
+
+<script>
+  paypal.Buttons({
+    // Existing createOrder and onApprove functions
+
+    onCancel: function (data) {
+      document.getElementById('cancel-message').style.display = 'block';
+    }
+  }).render('#paypal-button-container');
+</script>
