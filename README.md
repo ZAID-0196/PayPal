@@ -1,24 +1,35 @@
 # README
+# Pay Pal
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This README provides an overview of the steps required to get the application up and running.
 
-Things you may want to cover:
+## Ruby Version
 
-* Ruby version
+This project requires Ruby version 3.2.2.
 
-* System dependencies
+## System Dependencies
 
-* Configuration
+Ensure you have the following dependencies installed:
 
-* Database creation
+- SQLite3 (database)
+- Puma (web server)
+- Other dependencies as specified in the Gemfile
 
-* Database initialization
+## Configuration
 
-* How to run the test suite
+1. Install Ruby 3.2.2.
+2. Clone this repository.
+3. Run `bundle install` to install required gems.
+4. Set up any necessary environment variables using dotenv (`dotenv` gem is included).
 
-* Services (job queues, cache servers, search engines, etc.)
+## Database
 
-* Deployment instructions
+This project uses SQLite3 as the database.
 
-* ...
+## Server
+
+rails server
+
+
+Feel free to customize this README to better suit your project's needs.
+
